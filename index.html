@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hướng dẫn HPC PDF Reader</title>
+<meta name="description" content="Hướng dẫn sử dụng phần mềm HPC PDF Reader - đọc, đo và chỉnh sửa bản vẽ PDF">
+<style>
+:root{
+  --bg:#f6f4fa; --surface:#ffffff; --surface-2:#f1ecf8; --text:#1f1a2b; --muted:#6b6478; --line:#e4dcef;
+  --accent:#5b2c8f; --accent-2:#7c4dbc; --accent-soft:#efe6fb; --on-accent:#ffffff;
+  --tip:#0f7b5f; --tip-soft:#e3f5ee; --warn:#a15c00; --warn-soft:#fff3df;
+  --kbd-bg:#ffffff; --kbd-line:#cfc4de; --mark:#ffe58a;
+  --hero-1:#3d1a66; --hero-2:#6b35a8; --hero-3:#9a5fd6;
+  --shadow:0 1px 2px rgba(40,20,70,.06),0 8px 24px rgba(40,20,70,.07);
+  --radius:16px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141019; --surface:#1d1726; --surface-2:#251d31; --text:#ece6f5; --muted:#a69cb6; --line:#342a43;
+  --accent:#c39bf2; --accent-2:#a77ce0; --accent-soft:#2c2140; --on-accent:#1a1023;
+  --tip:#5fd3ad; --tip-soft:#15302a; --warn:#f2b45c; --warn-soft:#33260f;
+  --kbd-bg:#2a2236; --kbd-line:#4a3e5c; --mark:#7a5d00;
+  --hero-1:#1e0f33; --hero-2:#3b1f63; --hero-3:#5d3594;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#141019; --surface:#1d1726; --surface-2:#251d31; --text:#ece6f5; --muted:#a69cb6; --line:#342a43;
+  --accent:#c39bf2; --accent-2:#a77ce0; --accent-soft:#2c2140; --on-accent:#1a1023;
+  --tip:#5fd3ad; --tip-soft:#15302a; --warn:#f2b45c; --warn-soft:#33260f;
+  --kbd-bg:#2a2236; --kbd-line:#4a3e5c; --mark:#7a5d00;
+  --hero-1:#1e0f33; --hero-2:#3b1f63; --hero-3:#5d3594;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:20px}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+/* ---------- hero ---------- */
+.hero{position:relative;overflow:hidden;color:#fff;
+  background:radial-gradient(1200px 400px at 85% -10%,var(--hero-3),transparent 60%),linear-gradient(135deg,var(--hero-1),var(--hero-2));}
+.hero::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.12;
+  background-image:linear-gradient(rgba(255,255,255,.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.6) 1px,transparent 1px);
+  background-size:32px 32px;mask-image:linear-gradient(180deg,#000,transparent 85%)}
+.hero-in{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:28px 24px 40px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.3px}
+.brand .logo{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.16);display:grid;place-items:center;border:1px solid rgba(255,255,255,.25)}
+.brand .logo svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:1.8}
+.icon-btn{appearance:none;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:#fff;border-radius:10px;
+  height:38px;min-width:38px;padding:0 10px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;font:inherit;font-size:14px}
+.icon-btn:hover{background:rgba(255,255,255,.22)}
+.icon-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8}
+.hero h1{font-size:clamp(30px,5vw,48px);line-height:1.15;margin:34px 0 10px;letter-spacing:-.5px}
+.hero p.lead{margin:0;max-width:640px;font-size:clamp(16px,2vw,18px);opacity:.88}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.badge{font-size:13px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22)}
+.search{margin-top:26px;max-width:560px;position:relative}
+.search input{width:100%;height:50px;border-radius:14px;border:0;padding:0 46px 0 48px;font:inherit;font-size:16px;
+  background:#fff;color:#1f1a2b;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.search input:focus{outline:3px solid rgba(255,255,255,.5)}
+.search svg{position:absolute;left:16px;top:15px;width:20px;height:20px;stroke:#7a6f8c;fill:none;stroke-width:2}
+.search .clear{position:absolute;right:10px;top:10px;width:30px;height:30px;border-radius:8px;border:0;background:#eee8f6;color:#5b2c8f;cursor:pointer;display:none;font-size:18px;line-height:1}
+.search .hint{font-size:13px;opacity:.75;margin-top:8px}
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px}
+.feat{display:block;text-decoration:none;color:#fff;padding:16px;border-radius:14px;background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.2);transition:transform .15s,background .15s}
+.feat:hover{transform:translateY(-2px);background:rgba(255,255,255,.18)}
+.feat svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:1.7;margin-bottom:8px}
+.feat b{display:block;font-size:15px}
+.feat span{font-size:13px;opacity:.8;line-height:1.4;display:block;margin-top:2px}
+/* hero gọn trên màn hình rộng: chữ + tìm kiếm bên trái, 4 thẻ chức năng bên phải (vùng nội dung lộ ra sớm) */
+@media (min-width:981px){
+  .hero-in{padding:16px 24px 24px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:36px;align-items:center}
+  .topbar{grid-column:1/-1}
+  .hero h1,.hero p.lead,.badges,.search{grid-column:1}
+  .hero h1{font-size:clamp(28px,2.8vw,36px);margin:14px 0 6px}
+  .hero p.lead{font-size:15px}
+  .badges{margin-top:10px}
+  .search{margin-top:14px}
+  .search input{height:44px}.search svg{top:12px}.search .clear{top:7px}
+  .features{grid-column:2;grid-row:2/span 4;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:0;align-self:center}
+  .feat{padding:12px 14px}
+  .feat svg{width:22px;height:22px;margin-bottom:4px}
+}
+/* ---------- layout ---------- */
+.wrap{max-width:1180px;margin:0 auto;padding:28px 24px 80px;display:grid;grid-template-columns:270px minmax(0,1fr);gap:32px;align-items:start}
+nav.toc{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto;padding:14px 10px 14px 6px;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.toc-title{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:700;padding:4px 12px 8px}
+nav.toc ul{list-style:none;margin:0;padding:0}
+nav.toc>ul>li>a{display:flex;gap:10px;align-items:center;padding:7px 12px;border-radius:10px;text-decoration:none;color:var(--text);font-size:14.5px;font-weight:600}
+nav.toc>ul>li>a .n{flex:none;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:12px;background:var(--surface-2);color:var(--muted)}
+nav.toc>ul>li>a:hover{background:var(--surface-2)}
+nav.toc>ul>li>a.active{background:var(--accent-soft);color:var(--accent)}
+nav.toc>ul>li>a.active .n{background:var(--accent);color:var(--on-accent)}
+nav.toc li ul{display:none;margin:2px 0 6px 46px;border-left:2px solid var(--line)}
+nav.toc li.open ul{display:block}
+nav.toc li ul a{display:block;padding:3px 10px;font-size:13.5px;color:var(--muted);text-decoration:none}
+nav.toc li ul a:hover{color:var(--accent)}
+nav.toc li.hidden{display:none}
+main{min-width:0}
+.sec{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:22px;overflow:hidden}
+.sec.hidden{display:none}
+.sec-h{display:flex;gap:14px;align-items:center;padding:20px 26px;border-bottom:1px solid var(--line);
+  background:linear-gradient(90deg,var(--accent-soft),transparent 70%)}
+.ico{flex:none;width:46px;height:46px;border-radius:13px;display:grid;place-items:center;background:var(--accent);color:var(--on-accent);box-shadow:0 6px 14px rgba(91,44,143,.25)}
+.ico svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.kicker{font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent);font-weight:700}
+.sec-h h2{margin:0;font-size:24px;line-height:1.25}
+.sec-b{padding:8px 26px 22px}
+.sec-b h3{font-size:18px;margin:24px 0 8px;padding-top:4px;display:flex;align-items:center;gap:8px}
+.sec-b h3::before{content:"";width:6px;height:18px;border-radius:3px;background:var(--accent-2)}
+.sec-b p{margin:10px 0}
+.sec-b ul{padding-left:22px;margin:10px 0}
+.sec-b ul li{margin:6px 0}
+.sec-b ul li::marker{color:var(--accent-2)}
+ol.steps{list-style:none;counter-reset:st;padding:0;margin:14px 0}
+ol.steps li{counter-increment:st;position:relative;padding:10px 14px 10px 54px;margin:8px 0;background:var(--surface-2);border-radius:12px}
+ol.steps li::before{content:counter(st);position:absolute;left:12px;top:9px;width:28px;height:28px;border-radius:50%;
+  background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-weight:700;font-size:14px}
+kbd{display:inline-block;font:600 12.5px/1 "Segoe UI",system-ui,sans-serif;padding:4px 7px;border-radius:6px;background:var(--kbd-bg);
+  border:1px solid var(--kbd-line);border-bottom-width:3px;color:var(--text);white-space:nowrap;vertical-align:1px}
+.plus{margin:0 2px;color:var(--muted);font-size:12px}
+code{font:13.5px Consolas,"Cascadia Mono",monospace;background:var(--surface-2);border:1px solid var(--line);padding:1px 6px;border-radius:6px;word-break:break-word}
+.callout{display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:12px;margin:14px 0;border:1px solid transparent}
+.callout b{flex:none;font-size:12px;text-transform:uppercase;letter-spacing:.8px;padding:3px 8px;border-radius:6px;margin-top:2px}
+.callout.warn{background:var(--warn-soft);border-color:color-mix(in srgb,var(--warn) 30%,transparent)}
+.callout.warn b{background:var(--warn);color:var(--surface)}
+.callout.tip{background:var(--tip-soft);border-color:color-mix(in srgb,var(--tip) 30%,transparent)}
+.callout.tip b{background:var(--tip);color:var(--surface)}
+.tbl{margin:14px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{background:var(--accent);color:var(--on-accent);text-align:left;padding:10px 14px;font-weight:600}
+td{padding:10px 14px;border-top:1px solid var(--line);vertical-align:top}
+tbody tr:nth-child(even) td{background:var(--surface-2)}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
+.empty{display:none;text-align:center;padding:50px 20px;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:var(--radius)}
+footer.foot{text-align:center;color:var(--muted);font-size:13px;padding:10px 0 0}
+.totop{position:fixed;right:20px;bottom:20px;width:46px;height:46px;border-radius:50%;border:0;background:var(--accent);color:var(--on-accent);
+  box-shadow:var(--shadow);cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s;display:grid;place-items:center}
+.totop.show{opacity:1;pointer-events:auto}
+.totop svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.2}
+.menu-btn{display:none}
+.scrim{display:none}
+/* ---------- responsive ---------- */
+@media (max-width:980px){
+  .features{grid-template-columns:repeat(2,1fr)}
+  .wrap{grid-template-columns:1fr;padding:20px 16px 80px}
+  .menu-btn{display:inline-flex}
+  nav.toc{position:fixed;z-index:30;left:0;top:0;bottom:0;width:min(310px,86vw);max-height:none;border-radius:0 16px 16px 0;
+    transform:translateX(-105%);transition:transform .22s ease;padding-top:18px}
+  body.nav-open nav.toc{transform:none}
+  body.nav-open .scrim{display:block;position:fixed;inset:0;z-index:20;background:rgba(10,5,20,.45)}
+}
+@media (max-width:560px){
+  .hero-in{padding:20px 16px 30px}
+  .features{grid-template-columns:1fr 1fr;gap:10px}
+  .feat{padding:12px}.feat span{display:none}
+  .sec-h{padding:16px}.sec-b{padding:4px 16px 18px}
+  .sec-h h2{font-size:20px}.ico{width:40px;height:40px}
+  .icon-btn .lbl{display:none}
+  thead{display:none}
+  table,tbody,tr,td{display:block;width:100%}
+  tr{border-top:1px solid var(--line);padding:6px 0}
+  tbody tr:nth-child(even) td{background:transparent}
+  td{border:0;padding:4px 14px}
+  td::before{content:attr(data-h);display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700}
+}
+@media print{
+  .topbar .actions,.search,.features,nav.toc,.totop,.menu-btn{display:none!important}
+  body{background:#fff}.hero{background:#fff;color:#000}.hero::after{display:none}
+  .wrap{display:block;padding:0}.sec{box-shadow:none;break-inside:auto}.sec-h{break-after:avoid}
+}
+</style>
+<style>.new-tag{display:inline-block;margin-left:8px;padding:1px 8px;border-radius:999px;font-size:12px;background:var(--accent);color:var(--on-accent);vertical-align:middle}.new-group{margin:14px 0 4px}.new-old{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:10px 16px}.new-old summary{cursor:pointer;font-weight:600;color:var(--accent)}.new-old[open] summary{margin-bottom:6px}</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-in">
+    <div class="topbar">
+      <div class="brand"><span class="logo"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h4"/></svg></span>HP CONS · HPC PDF Reader</div>
+      <div class="actions" style="display:flex;gap:8px">
+        <button class="icon-btn menu-btn" id="menuBtn" aria-label="Mục lục"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span class="lbl">Mục lục</span></button>
+        <button class="icon-btn" id="themeBtn" aria-label="Đổi giao diện sáng / tối"><svg viewBox="0 0 24 24"><path d="M21 13A9 9 0 1111 3a7 7 0 0010 10z"/></svg><span class="lbl">Sáng / tối</span></button>
+        <button class="icon-btn" onclick="window.print()" aria-label="In hướng dẫn"><svg viewBox="0 0 24 24"><path d="M7 8V3h10v5"/><rect x="3" y="8" width="18" height="9" rx="2"/><path d="M7 14h10v7H7z"/></svg><span class="lbl">In</span></button>
+      </div>
+    </div>
+    <h1>Hướng dẫn sử dụng<br>HPC PDF Reader</h1>
+    <p class="lead">Đọc, đo, trích xuất và chỉnh sửa bản vẽ kỹ thuật PDF: đo theo tỉ lệ bản vẽ, chép bảng sang Excel, ghép nhãn cấu kiện, in đúng tỉ lệ và ký số.</p>
+    <div class="badges"><span class="badge">Phiên bản <!--VER-->1.0.5<!--/VER--></span><span class="badge">Windows</span><span class="badge"><!--MONTH-->Tháng 11/2026<!--/MONTH--></span></div>
+    <div class="search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" placeholder="Tìm chức năng… (VD: đo diện tích, trang lẻ, Ctrl+P)" autocomplete="off">
+      <button class="clear" id="clr" aria-label="Xoá tìm kiếm">×</button>
+      <div class="hint">Gõ không dấu cũng được: "noi chu", "xoay trang"…</div>
+    </div>
+    <div class="features">
+      <a class="feat" href="#s4"><svg viewBox="0 0 24 24"><path d="M3 17L17 3l4 4L7 21z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/></svg><b>Đo bản vẽ</b><span>Đo dài, diện tích theo tỉ lệ, bắt điểm như AutoCAD</span></a>
+      <a class="feat" href="#s5-1"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg><b>Bảng sang Excel</b><span>Quét bảng thống kê, dán vào Excel đúng hàng cột</span></a>
+      <a class="feat" href="#s5-2"><svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></svg><b>Nối chữ</b><span>Ghép nhãn M5A-CC4 và đếm số lượng tự động</span></a>
+      <a class="feat" href="#s10"><svg viewBox="0 0 24 24"><path d="M7 8V3h10v5"/><rect x="3" y="8" width="18" height="9" rx="2"/><path d="M7 14h10v7H7z"/></svg><b>In đúng tỉ lệ</b><span>A1 ra A3 đúng 50%, in chẵn / lẻ, 2 mặt</span></a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="toc" id="toc" aria-label="Mục lục">
+    <div class="toc-title">Mục lục</div>
+    <ul><li><a href="#s0" data-sec="s0"><span class="n">★</span>Có gì mới</a></li><li><a href="#s1" data-sec="s1"><span class="n">1</span>Giới thiệu</a><ul><li><a href="#s1-1">1.1. Cài đặt</a></li><li><a href="#s1-2">1.2. Cập nhật phiên bản</a></li><li><a href="#s1-3">1.3. Đổi ngôn ngữ</a></li></ul></li><li><a href="#s2" data-sec="s2"><span class="n">2</span>Giao diện chính</a></li><li><a href="#s3" data-sec="s3"><span class="n">3</span>Mở, lưu và xem tài liệu</a><ul><li><a href="#s3-1">3.1. Mở và lưu</a></li><li><a href="#s3-2">3.2. Thu phóng và di chuyển</a></li><li><a href="#s3-3">3.3. Chuyển trang, tìm kiếm, bookmark</a></li></ul></li><li><a href="#s4" data-sec="s4"><span class="n">4</span>Đo bản vẽ</a><ul><li><a href="#s4-1">4.1. Tỉ lệ đo</a></li><li><a href="#s4-2">4.2. Đo dài (L)</a></li><li><a href="#s4-3">4.3. Đo diện tích (K)</a></li><li><a href="#s4-4">4.4. Bắt điểm (F3) và Ortho (F8)</a></li><li><a href="#s4-5">4.5. Ghi kết quả đo và Chọn dim</a></li></ul></li><li><a href="#s5" data-sec="s5"><span class="n">5</span>Trích xuất dữ liệu</a><ul><li><a href="#s5-1">5.1. Chọn chữ - sao chép chữ và bảng (S)</a></li><li><a href="#s5-2">5.2. Nối chữ - ghép nhãn cấu kiện (J)</a></li><li><a href="#s5-3">5.3. Chụp màn hình (Ctrl+Shift+X)</a></li></ul></li><li><a href="#s6" data-sec="s6"><span class="n">6</span>Chỉnh sửa nội dung</a></li><li><a href="#s7" data-sec="s7"><span class="n">7</span>Bình luận và nét vẽ</a><ul><li><a href="#s7-1">7.1. Cài đặt nét vẽ</a></li><li><a href="#s7-2">7.2. Sửa nét đã vẽ</a></li></ul></li><li><a href="#s8" data-sec="s8"><span class="n">8</span>Quản lý trang</a><ul><li><a href="#s8-1">8.1. Xoay nhiều trang (Ctrl+Shift+R)</a></li></ul></li><li><a href="#s9" data-sec="s9"><span class="n">9</span>Ghép, tách, nén file</a><ul><li><a href="#s9-1">9.1. Ghép file</a></li><li><a href="#s9-2">9.2. Tách file</a></li><li><a href="#s9-3">9.3. Nén PDF</a></li></ul></li><li><a href="#s10" data-sec="s10"><span class="n">10</span>In bản vẽ</a><ul><li><a href="#s10-1">10.1. In 2 mặt trên máy in 1 mặt</a></li></ul></li><li><a href="#s11" data-sec="s11"><span class="n">11</span>Chữ ký số</a><ul><li><a href="#s11-1">11.1. Ký số tài liệu</a></li><li><a href="#s11-2">11.2. Kiểm tra chữ ký</a></li></ul></li><li><a href="#s12" data-sec="s12"><span class="n">12</span>Bảng phím tắt</a></li><li><a href="#s13" data-sec="s13"><span class="n">13</span>Câu hỏi thường gặp</a></li></ul>
+  </nav>
+  <div class="scrim" id="scrim"></div>
+  <main id="main">
+    <section id="s0" class="sec">
+  <header class="sec-h"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg></span>
+  <div><span class="kicker">Cập nhật</span><h2>Có gì mới</h2></div></header>
+  <div class="sec-b"><p>Các thay đổi của những bản gần đây. Phần mềm tự báo khi có bản mới (xem mục 1.2).</p><h3 id="new-1-0-5">Bản 1.0.5 – 14/11/2026 <span class="new-tag">Mới nhất</span></h3><p class="new-group"><strong>Chức năng mới</strong></p><ul><li><strong>Chọn chữ có bảng danh sách và đếm số lượng</strong>: mỗi lần quét, ngoài sao chép chữ / bảng như cũ, phần mềm mở bảng danh sách các chữ trong vùng và thống kê số lượng từng loại (VD 2M-5: 54, 2C5: 54). Có ô Bỏ số (kích thước, cao độ), Xếp danh sách A→Z, nút sao chép danh sách / thống kê để dán vào Excel, nút Sao chép nguyên mẫu (lấy lại bảng / chữ giữ đúng định dạng như lúc quét).</li><li><strong>Nút Cài đặt dim</strong> (nhóm Đo bản vẽ): gom Bắt điểm, Ortho, Tỉ lệ đo, Ghi kết quả đo vào 1 nút; F3 / F8 vẫn dùng.</li><li><strong>Trang hướng dẫn sử dụng trên web</strong> (mục Hướng dẫn sử dụng ở trang Bắt đầu, Tệp → Hướng dẫn sử dụng (trang web)): luôn có mục Có gì mới của bản mới nhất.</li></ul><p class="new-group"><strong>Cải tiến</strong></p><ul><li><strong>Ribbon tự vừa màn hình</strong>: màn hình hẹp thì thu nhỏ đều chữ và biểu tượng, vẫn đủ các nút.</li><li>Ô chuyển trang nằm giữa, ngay dưới vùng xem trang.</li><li><strong>Ghi kết quả diện tích</strong>: ghi 2 dòng (S = …, Chu vi = …), chữ nhỏ hơn 1 cỡ, đặt phía trên hình (không đè lên hình); chu vi cùng đơn vị với diện tích (m² thì m).</li><li><strong>Tách file</strong>: dòng xem trước cho biết sẽ tạo bao nhiêu file, mỗi file gồm trang nào.</li></ul><p class="new-group"><strong>Sửa lỗi</strong></p><ul><li>Tách file: đổi số N hoặc gõ khoảng trang mà quên bấm nút chọn thì vẫn tách mỗi trang 1 file. Giờ tự chọn đúng.</li><li>Tách / trích / lưu đè lên file đang mở ở phần mềm khác báo lỗi "Access is denied": giờ ghi đè được.</li></ul><details class="new-old"><summary>Bản 1.0.4 – 12/11/2026</summary><p class="new-group"><strong>Cải tiến</strong></p><ul><li><strong>In sắc nét</strong>: in dạng vector (chữ và nét gửi thẳng cho máy in như Foxit / Acrobat) thay vì in dạng ảnh, hết hiện tượng chữ vỡ, nhoè. Lớp (layer) đang ẩn thì không in. Máy không in vector được thì tự in như cũ.</li><li><strong>Nối chữ</strong>: thêm thứ tự "Theo ABC" và ô "Xếp danh sách A→Z" (xếp tự nhiên: 2 trước 10).</li></ul><p class="new-group"><strong>Sửa lỗi</strong></p><ul><li>Lỗi "cannot find object in xref (1 0 R)" khi chèn / ghép / tách / lưu / nén file PDF có bảng xref bị thiếu mục: phần mềm tự sửa file tạm rồi làm tiếp.</li></ul></details><details class="new-old"><summary>Bản 1.0.3 – 10/11/2026</summary><p class="new-group"><strong>Sửa lỗi</strong></p><ul><li><strong>Cập nhật làm hỏng phần mềm</strong> ("Failed to load Python DLL ... python314.dll"): bộ cài xoá thư viện cũ khi phần mềm chưa thoát hẳn nên không chép được bản mới. Bộ cài giờ chờ phần mềm thoát hẳn (tối đa 60 giây) rồi mới xoá / chép file; không thoát được thì dừng, không xoá gì.</li></ul><p class="new-group"><strong>Cải tiến</strong></p><ul><li>Hộp tải bản cập nhật hiện "Đang kết nối máy chủ...", số MB đã tải, tốc độ và thời gian còn lại.</li><li>Phát hành tự tải thử bộ cài 1 lần (nạp sẵn bộ nhớ đệm GitHub, kiểm tra mã) để máy người dùng tải nhanh.</li></ul></details></div></section>
+<section id="s1" class="sec">
+  <header class="sec-h"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></span>
+  <div><span class="kicker">Mục 1</span><h2>Giới thiệu</h2></div></header>
+  <div class="sec-b"><p><strong>HPC PDF Reader</strong> là phần mềm đọc và chỉnh sửa PDF do HP CONS phát triển, tập trung cho <strong>bản vẽ kỹ thuật xây dựng</strong> xuất từ AutoCAD: đo kích thước theo tỉ lệ bản vẽ, sao chép bảng sang Excel, ghép nhãn cấu kiện, sửa chữ trực tiếp, ghi chú, in đúng tỉ lệ và ký số.</p><h3 id="s1-1">1.1. Cài đặt</h3><ol class="steps"><li>Tắt HPC PDF Reader nếu đang mở (phần mềm chỉ cho chạy một cửa sổ).</li><li>Chạy file <code>HPC_PDF_Reader_Setup_x.x.x.exe</code> và làm theo các bước của trình cài đặt.</li><li>Cài bản mới thì cứ chạy bộ cài mới: bộ cài sẽ cài đè lên bản cũ, giữ nguyên các thiết lập.</li></ol><h3 id="s1-2">1.2. Cập nhật phiên bản</h3><p>Khi mở phần mềm, chương trình tự kiểm tra bản mới (cần mạng Internet) và hiện thông báo nếu có. Bấm <strong>Cập nhật</strong>: hộp tải hiện số MB đã tải, tốc độ và thời gian còn lại; tải xong phần mềm tự đóng, cài bản mới rồi mở lại. Có thể kiểm tra bằng tay ở <strong>Tệp → Kiểm tra cập nhật...</strong>. Xem số phiên bản đang dùng ở <strong>Tệp → Thông tin phiên bản...</strong>.</p><h3 id="s1-3">1.3. Đổi ngôn ngữ</h3><p>Vào <strong>Tệp → Ngôn ngữ / Language</strong> để chọn Tiếng Việt hoặc English.</p></div></section>
+<section id="s2" class="sec">
+  <header class="sec-h"><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 9v11"/></svg></span>
+  <div><span class="kicker">Mục 2</span><h2>Giao diện chính</h2></div></header>
+  <div class="sec-b"><ul><li><strong>Thanh tiêu đề</strong> (trên cùng): logo và các nút nhanh Mở, Lưu, In, Hoàn tác, Làm lại; tên file đang xem ở giữa.</li><li><strong>Nút Tệp</strong> (màu tím, bên trái hàng tab): mở / lưu / in, ghép - tách - nén file, file gần đây, ngôn ngữ, cập nhật, thông tin phiên bản.</li><li><strong>Ribbon</strong> gồm 3 tab: <strong>Trang chủ</strong> (công cụ Kéo, thu phóng, chuyển trang), <strong>HPC Tools</strong> (toàn bộ công cụ làm việc với bản vẽ: đo, trích xuất, sửa nội dung, bình luận, trang, tệp, chữ ký số) và <strong>Xem</strong> (zoom vùng, bật / tắt bảng bên, đánh dấu trang).</li><li><strong>Bảng bên trái</strong>: <strong>Trang</strong> (ảnh thu nhỏ các trang), <strong>Bookmark</strong>, <strong>Layer</strong> (lớp của bản vẽ CAD). Bật / tắt ở tab Xem.</li><li><strong>Ô tìm kiếm</strong> ở góc phải hàng tab (<kbd>Ctrl</kbd><span class=plus>+</span><kbd>F</kbd>).</li><li><strong>Tab file</strong>: mỗi file mở thành một tab, chuyển tab bằng <kbd>Ctrl</kbd><span class=plus>+</span><kbd>Tab</kbd> / <kbd>Ctrl</kbd><span class=plus>+</span><kbd>Shift</kbd><span class=plus>+</span><kbd>Tab</kbd>.</li><li><strong>Ribbon tự vừa màn hình</strong>: màn hình hẹp (laptop) thì ribbon thu nhỏ đều chữ và biểu tượng cho vừa bề rộng, vẫn đủ các nút.</li><li><strong>Thanh trạng thái</strong> (dưới cùng): gợi ý cách dùng của công cụ đang chọn, kết quả đo; <strong>ô chuyển trang</strong> (|&lt; &lt; số trang / tổng &gt; &gt;|) nằm giữa, ngay dưới vùng xem trang.</li></ul><div class="callout tip"><b>Mẹo</b><span>Rê chuột lên một nút để xem chú thích và phím tắt của nút đó.</span></div></div></section>
+<section id="s3" class="sec">
+  <header class="sec-h"><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h4l2 2h6a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2z"/></svg></span>
+  <div><span class="kicker">Mục 3</span><h2>Mở, lưu và xem tài liệu</h2></div></header>
+  <div class="sec-b"><h3 id="s3-1">3.1. Mở và lưu</h3><ul><li>Mở file: <kbd>Ctrl</kbd><span class=plus>+</span><kbd>O</kbd>, hoặc <strong>kéo - thả</strong> file PDF vào cửa sổ (mỗi file một tab), hoặc chọn trong <strong>Tệp → File gần đây</strong>.</li><li>Lưu: <kbd>Ctrl</kbd><span class=plus>+</span><kbd>S</kbd>. Lưu thành file khác: <kbd>Ctrl</kbd><span class=plus>+</span><kbd>Shift</kbd><span class=plus>+</span><kbd>S</kbd>. Đóng tab: <kbd>Ctrl</kbd><span class=plus>+</span><kbd>W</kbd>.</li><li>Hoàn tác / Làm lại: <kbd>Ctrl</kbd><span class=plus>+</span><kbd>Z</kbd> / <kbd>Ctrl</kbd><span class=plus>+</span><kbd>Y</kbd> (áp dụng cho sửa chữ, xoá, xoay trang, ghi chú...).</li></ul><h3 id="s3-2">3.2. Thu phóng và di chuyển</h3><ul><li><kbd>Ctrl</kbd> + lăn chuột: phóng to / thu nhỏ tại vị trí con trỏ.</li><li>Nhấn giữ <strong>chuột giữa</strong> để kéo trang ở bất kỳ công cụ nào; hoặc dùng công cụ <strong>Kéo</strong> (<kbd>H</kbd>).</li><li><kbd>Ctrl</kbd><span class=plus>+</span><kbd>0</kbd> vừa cả trang · <kbd>Ctrl</kbd><span class=plus>+</span><kbd>2</kbd> vừa chiều rộng · <kbd>Ctrl</kbd><span class=plus>+</span><kbd>1</kbd> kích thước thật 100%.</li><li><strong>Zoom vùng</strong> (<kbd>Z</kbd>, tab Xem): quét một vùng để phóng to vùng đó; chuột phải để thu nhỏ.</li><li><kbd>Esc</kbd>: huỷ thao tác đang làm và trở về công cụ Kéo.</li></ul><h3 id="s3-3">3.3. Chuyển trang, tìm kiếm, bookmark</h3><ul><li>Trang đầu / trước / sau / cuối: <kbd>Home</kbd> / <kbd>PgUp</kbd> / <kbd>PgDown</kbd> / <kbd>End</kbd>, hoặc bấm ảnh thu nhỏ ở cột Trang.</li><li><strong>Lật nhanh bản vẽ</strong> (<kbd>F5</kbd>): xem từng bản vẽ vừa màn hình, qua bản bằng phím mũi tên, <kbd>Space</kbd> hoặc lăn chuột; <kbd>Esc</kbd> để thoát.</li><li><strong>Tìm chữ</strong>: <kbd>Ctrl</kbd><span class=plus>+</span><kbd>F</kbd>, gõ từ cần tìm vào ô tìm kiếm rồi Enter.</li><li><strong>Thêm bookmark trang này</strong>: <kbd>Ctrl</kbd><span class=plus>+</span><kbd>B</kbd>. Danh sách bookmark ở bảng Bookmark.</li><li><strong>Layer</strong>: với bản vẽ CAD có lớp, bật / tắt từng lớp ở bảng Layer để xem riêng phần cần thiết.</li></ul></div></section>
+<section id="s4" class="sec">
+  <header class="sec-h"><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 17L17 3l4 4L7 21z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/></svg></span>
+  <div><span class="kicker">Mục 4</span><h2>Đo bản vẽ</h2></div></header>
+  <div class="sec-b"><p>Các công cụ đo nằm ở tab <strong>HPC Tools → Đo bản vẽ</strong>. Kết quả tính theo tỉ lệ bản vẽ, đơn vị mm / m / m².</p><h3 id="s4-1">4.1. Tỉ lệ đo</h3><p>Bấm <strong>Tỉ lệ đo...</strong> để chọn một trong ba cách:</p><ul><li><strong>Tự nhận theo chữ "TỶ LỆ 1:N"</strong> trên bản vẽ (mặc định): chương trình lấy tỉ lệ ghi gần vùng đo nhất. Hợp với tờ có nhiều hình với tỉ lệ khác nhau.</li><li><strong>Dùng tỉ lệ cố định 1 : N</strong>: nhập tỉ lệ khi bản vẽ không ghi tỉ lệ.</li><li><strong>Hiệu chỉnh theo đoạn vừa đo</strong>: đo một kích thước đã biết (VD khoảng cách 2 trục) rồi nhập chiều dài thật; chương trình tự tính tỉ lệ.</li></ul><div class="callout warn"><b>Lưu ý</b><span>Nên kiểm tra tỉ lệ bằng cách đo thử một kích thước đã ghi trên bản vẽ trước khi đo hàng loạt.</span></div><h3 id="s4-2">4.2. Đo dài (L)</h3><ol class="steps"><li>Chọn <strong>Đo dài</strong> (<kbd>L</kbd>).</li><li>Bấm lần lượt các điểm (đo được đường gấp khúc nhiều đoạn).</li><li>Kết thúc bằng <kbd>Enter</kbd>, <kbd>Space</kbd> hoặc chuột phải. Bấm <kbd>U</kbd> để bỏ điểm vừa chọn, <kbd>Esc</kbd> để huỷ.</li></ol><h3 id="s4-3">4.3. Đo diện tích (K)</h3><ol class="steps"><li>Chọn <strong>Đo diện tích</strong> (<kbd>K</kbd>).</li><li>Bấm lần lượt các góc của vùng cần đo; <kbd>Enter</kbd>, <kbd>C</kbd> hoặc chuột phải để đóng hình.</li><li>Hoặc giữ <kbd>Ctrl</kbd> và bấm vào nét của một hình kín có sẵn để chọn luôn hình đó.</li><li>Nhấn <kbd>+</kbd> / <kbd>−</kbd> để cộng / trừ nhiều vùng (VD sàn trừ lỗ mở).</li></ol><h3 id="s4-4">4.4. Bắt điểm (F3) và Ortho (F8)</h3><p>Bắt điểm, Ortho, Tỉ lệ đo và Ghi kết quả đo gom trong nút <strong>Cài đặt dim</strong> (nhóm Đo bản vẽ): bấm nút để mở menu, mục có dấu ✓ là đang bật.</p><ul><li><strong>Bắt điểm</strong> (<kbd>F3</kbd>): tự bắt đầu mút, trung điểm, giao điểm, tâm, điểm trên nét, giống AutoCAD.</li><li><strong>Ortho</strong> (<kbd>F8</kbd>): chỉ đo theo phương ngang / dọc. Giữ <kbd>Shift</kbd> khi đo để đảo tạm trạng thái Ortho.</li></ul><h3 id="s4-5">4.5. Ghi kết quả đo và Chọn dim</h3><ul><li><strong>Ghi kết quả đo</strong> (nút ghim): khi bật, mỗi lần đo xong chương trình vẽ đường đo và con số lên bản vẽ thành một <strong>dim</strong>.</li><li><strong>Chọn dim</strong> (<kbd>Q</kbd>): rê chuột lên dim để thấy, bấm để chọn; kéo khung để chọn nhiều (kéo từ trái sang phải: chọn dim nằm trọn trong khung; từ phải sang trái: chọn dim chạm khung). <kbd>Ctrl</kbd> / <kbd>Shift</kbd> + bấm để thêm / bỏ, <kbd>Ctrl</kbd><span class=plus>+</span><kbd>A</kbd> chọn hết dim trên trang, <kbd>Delete</kbd> để xoá, chuột phải để mở menu.</li></ul></div></section>
+<section id="s5" class="sec">
+  <header class="sec-h"><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg></span>
+  <div><span class="kicker">Mục 5</span><h2>Trích xuất dữ liệu</h2></div></header>
+  <div class="sec-b"><h3 id="s5-1">5.1. Chọn chữ - sao chép chữ và bảng (S)</h3><ol class="steps"><li>Chọn <strong>Chọn chữ</strong> (<kbd>S</kbd>) ở nhóm Trích xuất.</li><li>Quét vùng chứa chữ cần lấy. Nội dung tự chép vào clipboard.</li><li>Dán (<kbd>Ctrl</kbd><span class=plus>+</span><kbd>V</kbd>) vào Excel, Word hoặc Zalo.</li></ol><ul><li>Quét trúng một <strong>bảng</strong> (bảng thống kê thép, bảng cửa...) thì dán vào Excel <strong>đúng hàng, cột, giữ ô gộp</strong>.</li><li>Chữ thường giữ bố cục, cỡ chữ và chữ đậm như trên bản vẽ; các cụm chữ cách xa nhau được tách thành cột.</li><li>Lấy được cả <strong>chữ viết dọc</strong> (chữ dọc theo trục, kích thước dọc): phần chữ dọc được đặt sau phần chữ ngang.</li></ul><div class="callout tip"><b>Danh sách và đếm số lượng</b><span>Mỗi lần quét, phần mềm còn mở bảng <strong>danh sách các chữ trong vùng</strong> và <strong>thống kê số lượng từng loại</strong> (VD 2M-5: 54, 2C5: 54). Tích <strong>Bỏ số</strong> để không đếm số kích thước, cao độ; tích <strong>Xếp danh sách A→Z</strong> để xếp theo tên. Bấm <strong>Sao chép danh sách</strong> / <strong>Sao chép thống kê</strong> rồi dán vào Excel.</span></div><h3 id="s5-2">5.2. Nối chữ - ghép nhãn cấu kiện (J)</h3><p>Dùng khi mỗi cấu kiện có hai nhãn xếp trên / dưới hoặc cạnh nhau, VD <strong>CC4</strong> ở trên và <strong>M5A</strong> ở dưới tại mỗi móng.</p><ol class="steps"><li>Chọn <strong>Nối chữ</strong> (<kbd>J</kbd>).</li><li>Quét vùng mặt bằng cần thống kê.</li><li>Chương trình ghép từng cặp thành <strong>M5A-CC4</strong> và hiện <strong>bảng đếm số lượng</strong> từng loại.</li><li>Chọn thứ tự ghép: dưới trước, trên trước hoặc <strong>Theo ABC</strong> (ghép theo thứ tự chữ cái, VD <code>C2-M2</code>); tích <strong>Xếp danh sách A→Z</strong> để xếp cả danh sách theo thứ tự tự nhiên (2 trước 10).</li><li>Bấm sao chép trong bảng rồi dán vào Excel bằng <kbd>Ctrl</kbd><span class=plus>+</span><kbd>V</kbd>.</li></ol><ul><li>Đọc được cả nhãn <strong>viết dọc theo trục</strong>.</li><li>Bản vẽ có chữ đã bị đổi thành nét vẽ (chữ outline, không chọn được) thì chương trình tự <strong>nhận dạng chữ (OCR)</strong>; nên kiểm tra lại kết quả vì OCR có thể đọc sai.</li></ul><h3 id="s5-3">5.3. Chụp màn hình (Ctrl+Shift+X)</h3><p>Quét một vùng trên trang: ảnh độ nét cao được chép vào clipboard để dán vào Word, Excel, Zalo. Giữ <kbd>Ctrl</kbd> khi thả chuột để lưu ra file ảnh PNG.</p></div></section>
+<section id="s6" class="sec">
+  <header class="sec-h"><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg></span>
+  <div><span class="kicker">Mục 6</span><h2>Chỉnh sửa nội dung</h2></div></header>
+  <div class="sec-b"><div class="tbl"><table><thead><tr><th>Công cụ</th><th>Phím</th><th>Cách dùng</th></tr></thead><tbody><tr><td data-h="Công cụ"><strong>Sửa chữ</strong></td><td data-h="Phím">E</td><td data-h="Cách dùng">Bấm vào chữ để sửa trực tiếp trên trang, nhận cả đoạn nhiều dòng. Thanh định dạng chỉnh phông, cỡ, đậm, nghiêng, màu, căn lề. Bấm ra ngoài hoặc <kbd>Ctrl</kbd><span class=plus>+</span><kbd>Enter</kbd> để ghi, <kbd>Esc</kbd> để huỷ.</td></tr><tr><td data-h="Công cụ"><strong>Di chuyển</strong></td><td data-h="Phím">M</td><td data-h="Cách dùng">Nhấn giữ một dòng chữ và kéo đi. Hoặc quét ở chỗ trống để chọn VÙNG rồi kéo vùng đó (chữ, hình, nét vẽ đi cùng nhau), hay dời bằng phím mũi tên (<kbd>Shift</kbd> + mũi tên = bước lớn). Giữ <kbd>Shift</kbd> khi kéo để đi thẳng hàng / thẳng cột.</td></tr><tr><td data-h="Công cụ"><strong>Thêm chữ</strong></td><td data-h="Phím">T</td><td data-h="Cách dùng">Bấm vào chỗ trống rồi gõ. Bấm ra ngoài để ghi, <kbd>Esc</kbd> để huỷ. Nhấn giữ chữ (VD chữ vừa thêm) để kéo sang chỗ khác; bấm vào chữ để sửa.</td></tr><tr><td data-h="Công cụ"><strong>Quét xoá vùng</strong></td><td data-h="Phím">D</td><td data-h="Cách dùng">Quét vùng để xoá toàn bộ dữ liệu (chữ, hình, nét vẽ) trong vùng.</td></tr></tbody></table></div><div class="callout warn"><b>Lưu ý</b><span>Quét xoá vùng xoá hẳn dữ liệu khỏi file khi lưu. Nếu lỡ tay, bấm <kbd>Ctrl</kbd><span class=plus>+</span><kbd>Z</kbd> trước khi đóng file. Nên giữ một bản gốc của bản vẽ trước khi sửa.</span></div><div class="callout warn"><b>Lưu ý</b><span>Chữ sau khi sửa dùng phông Windows gần giống phông gốc nên có thể hơi khác. File PDF dạng ảnh scan không có lớp chữ nên không sửa / sao chép chữ được.</span></div></div></section>
+<section id="s7" class="sec">
+  <header class="sec-h"><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></span>
+  <div><span class="kicker">Mục 7</span><h2>Bình luận và nét vẽ</h2></div></header>
+  <div class="sec-b"><div class="tbl"><table><thead><tr><th>Công cụ</th><th>Phím</th><th>Cách dùng</th></tr></thead><tbody><tr><td data-h="Công cụ"><strong>Tô sáng</strong></td><td data-h="Phím">G</td><td data-h="Cách dùng">Quét vùng để tô màu như bút dạ quang.</td></tr><tr><td data-h="Công cụ"><strong>Ghi chú</strong></td><td data-h="Phím">N</td><td data-h="Cách dùng">Quét vùng để đặt ô ghi chú chữ.</td></tr><tr><td data-h="Công cụ"><strong>Pline</strong></td><td data-h="Phím">P</td><td data-h="Cách dùng">Vẽ đường gấp khúc kiểu AutoCAD: chọn các điểm; <kbd>Enter</kbd> / <kbd>Space</kbd> / chuột phải / bấm đúp = xong, <kbd>C</kbd> = khép kín, <kbd>U</kbd> = bỏ điểm vừa chọn. Dùng được <kbd>F3</kbd> bắt điểm, <kbd>F8</kbd> Ortho.</td></tr><tr><td data-h="Công cụ"><strong>Đám mây</strong></td><td data-h="Phím">C</td><td data-h="Cách dùng">Quét vùng để vẽ đám mây sửa đổi (revision cloud).</td></tr><tr><td data-h="Công cụ"><strong>Khung</strong></td><td data-h="Phím">R</td><td data-h="Cách dùng">Quét vùng để vẽ khung chữ nhật.</td></tr><tr><td data-h="Công cụ"><strong>Mũi tên</strong></td><td data-h="Phím">A</td><td data-h="Cách dùng">Nhấn giữ và kéo; đầu mũi tên ở điểm thả chuột.</td></tr></tbody></table></div><h3 id="s7-1">7.1. Cài đặt nét vẽ</h3><p>Bấm <strong>Cài đặt nét vẽ...</strong> (nhóm Bình luận) để chọn màu, <strong>loại nét</strong> (liền, đứt, đứt dài, chấm, gạch chấm), <strong>độ dày</strong> tính theo mm khi in (như lineweight của AutoCAD; dùng nút − / + hoặc gõ số) và <strong>độ đậm</strong>. Thiết lập này dùng cho mọi nét vẽ từ lúc đó trở đi.</p><h3 id="s7-2">7.2. Sửa nét đã vẽ</h3><ul><li>Chọn công cụ <strong>Kéo</strong> (<kbd>H</kbd> hoặc <kbd>Esc</kbd>) rồi bấm vào nét vẽ (Pline, khung, mũi tên...) để chọn.</li><li>Kéo ô vuông nhỏ để sửa đỉnh, kéo thân nét để di chuyển.</li><li><kbd>Delete</kbd> để xoá, bấm đúp để đổi nét. Chuột phải vào ghi chú để sửa nội dung / đổi màu / xoá.</li></ul></div></section>
+<section id="s8" class="sec">
+  <header class="sec-h"><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 4v6h6"/><path d="M20 12a8 8 0 01-14.9 4M4 10a8 8 0 0114.9-2"/></svg></span>
+  <div><span class="kicker">Mục 8</span><h2>Quản lý trang</h2></div></header>
+  <div class="sec-b"><ul><li><strong>Xoay trái / Xoay phải</strong>: <kbd>Ctrl</kbd><span class=plus>+</span><kbd>Shift</kbd><span class=plus>+</span><kbd>-</kbd> / <kbd>Ctrl</kbd><span class=plus>+</span><kbd>Shift</kbd><span class=plus>+</span><kbd>=</kbd>, áp dụng cho các trang đang chọn ở cột Trang.</li><li><strong>Xoá trang</strong>: chọn trang ở cột Trang rồi bấm <kbd>Del</kbd>.</li><li><strong>Chèn trang trống</strong>, <strong>Chèn trang từ file...</strong>, <strong>Trích các trang đang chọn ra file...</strong>: ở nhóm Trang hoặc chuột phải vào cột Trang.</li><li><strong>Đổi thứ tự trang</strong>: kéo - thả ảnh thu nhỏ trong cột Trang.</li><li><strong>Chèn trang từ file khác</strong>: kéo - thả file PDF vào cột Trang.</li><li>Chọn nhiều trang trong cột Trang: giữ <kbd>Ctrl</kbd> (chọn lẻ) hoặc <kbd>Shift</kbd> (chọn liền dải).</li></ul><h3 id="s8-1">8.1. Xoay nhiều trang (Ctrl+Shift+R)</h3><ol class="steps"><li>Bấm <strong>Xoay nhiều trang...</strong> hoặc nhấn <kbd>Ctrl</kbd><span class=plus>+</span><kbd>Shift</kbd><span class=plus>+</span><kbd>R</kbd>.</li><li>Chọn <strong>hướng xoay</strong>: 90° trái, 90° phải hoặc 180°.</li><li>Chọn <strong>trang cần xoay</strong>: tất cả, các trang đang chọn ở cột Trang, trang hiện tại, hoặc nhập khoảng trang (VD <code>1-3, 5, 8</code>).</li><li>Lọc thêm nếu cần: <strong>chỉ trang lẻ / chẵn</strong>, <strong>chỉ trang đang nằm ngang / đứng dọc</strong>. Dòng chữ bên dưới cho biết số trang sẽ xoay.</li><li>Bấm <strong>Xoay</strong>. Toàn bộ lần xoay hoàn tác được bằng một lần <kbd>Ctrl</kbd><span class=plus>+</span><kbd>Z</kbd>.</li></ol><div class="callout tip"><b>Mẹo</b><span>Muốn dựng thẳng tất cả bản vẽ khổ ngang bị lưu dọc: chọn Tất cả + Chỉ trang đang đứng dọc, rồi xoay 90°.</span></div></div></section>
+<section id="s9" class="sec">
+  <header class="sec-h"><span class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="10" height="14" rx="1"/><rect x="10" y="7" width="10" height="14" rx="1"/></svg></span>
+  <div><span class="kicker">Mục 9</span><h2>Ghép, tách, nén file</h2></div></header>
+  <div class="sec-b"><h3 id="s9-1">9.1. Ghép file</h3><p><strong>Tệp → Ghép file</strong> (hoặc HPC Tools → Tệp): thêm các file PDF, sắp xếp thứ tự rồi bấm <strong>GHÉP FILE</strong>. Có tuỳ chọn <strong>Tạo bookmark theo tên từng file</strong> và <strong>Mở file sau khi ghép</strong>.</p><h3 id="s9-2">9.2. Tách file</h3><p><strong>Tách file</strong> chia file đang mở theo một trong ba cách: <strong>mỗi trang thành 1 file</strong>, <strong>mỗi N trang thành 1 file</strong>, hoặc <strong>theo khoảng trang</strong> (mỗi nhóm cách nhau bởi dấu <code>;</code> là một file, VD <code>1-3; 4-10</code>). Đổi số N hoặc gõ khoảng trang là phần mềm tự chọn đúng cách tách. Dòng chữ xanh bên dưới cho biết trước <strong>sẽ tạo bao nhiêu file, mỗi file gồm trang nào</strong>. Chọn thư mục lưu và tiền tố tên file rồi bấm <strong>TÁCH FILE</strong>. File cùng tên đã có thì phần mềm hỏi trước khi ghi đè.</p><h3 id="s9-3">9.3. Nén PDF</h3><p><strong>Nén PDF...</strong> giảm dung lượng một hoặc nhiều file. Có 4 mức:</p><div class="tbl"><table><thead><tr><th>Mức</th><th>Tác dụng</th></tr></thead><tbody><tr><td data-h="Mức">Nhẹ - giữ nguyên chất lượng</td><td data-h="Tác dụng">Chỉ dọn và nén lại cấu trúc file, cắt gọn phông chữ. Không đụng tới ảnh.</td></tr><tr><td data-h="Mức">Cân bằng - ảnh 150 dpi</td><td data-h="Tác dụng">Ảnh lớn được giảm về 150 dpi. Nét vẽ CAD và chữ (vector) giữ nguyên.</td></tr><tr><td data-h="Mức">Mạnh - ảnh 96 dpi</td><td data-h="Tác dụng">Hợp để gửi email / Zalo.</td></tr><tr><td data-h="Mức">Tối đa - ảnh 72 dpi, thang xám</td><td data-h="Tác dụng">Chỉ dùng để xem nhanh.</td></tr></tbody></table></div><p>Kết quả có thể <strong>lưu thành file mới cạnh file gốc</strong> (thêm đuôi vào tên) hoặc <strong>ghi đè lên file gốc</strong>.</p></div></section>
+<section id="s10" class="sec">
+  <header class="sec-h"><span class="ico"><svg viewBox="0 0 24 24"><path d="M7 8V3h10v5"/><rect x="3" y="8" width="18" height="9" rx="2"/><path d="M7 14h10v7H7z"/></svg></span>
+  <div><span class="kicker">Mục 10</span><h2>In bản vẽ</h2></div></header>
+  <div class="sec-b"><p>Bấm <kbd>Ctrl</kbd><span class=plus>+</span><kbd>P</kbd> (hoặc nút In). Hộp thoại In có khung xem trước bên phải.</p><div class="callout tip"><b>In sắc nét</b><span>Phần mềm in dạng <strong>vector</strong> (chữ và nét gửi thẳng cho máy in như Foxit / Acrobat) nên chữ nhỏ, nét mảnh của bản vẽ in ra sắc, không vỡ hay nhoè. Lớp (layer) đang tắt thì không in.</span></div><ul><li><strong>Máy in</strong>: chọn máy in, số bản, sắp bộ, in mặt (nếu máy in hỗ trợ in 2 mặt), in đen trắng.</li><li><strong>Trang cần in</strong>: tất cả, trang hiện tại, hoặc nhập khoảng trang. Ô <strong>In:</strong> chọn tất cả / <strong>chỉ trang lẻ</strong> / <strong>chỉ trang chẵn</strong>. Tích <strong>In ngược thứ tự</strong> để in trang cuối trước.</li><li><strong>Khổ giấy &amp; cỡ in</strong>: chọn khổ giấy, hướng giấy và cỡ in.</li></ul><div class="tbl"><table><thead><tr><th>Cỡ in</th><th>Khi nào dùng</th></tr></thead><tbody><tr><td data-h="Cỡ in"><strong>Theo khổ giấy (đúng tỉ lệ)</strong></td><td data-h="Khi nào dùng">In bản vẽ cần giữ đúng tỉ lệ 1:N. VD bản vẽ A1 in ra A3 thì co đúng 50%, đo trên giấy vẫn quy đổi được.</td></tr><tr><td data-h="Cỡ in"><strong>Vừa vùng in được</strong></td><td data-h="Khi nào dùng">Không bị mất mép nhưng tỉ lệ lệch vài %.</td></tr><tr><td data-h="Cỡ in"><strong>Đúng kích thước thật (100%)</strong></td><td data-h="Khi nào dùng">In đúng kích thước thật của trang PDF.</td></tr><tr><td data-h="Cỡ in"><strong>Tuỳ chỉnh</strong></td><td data-h="Khi nào dùng">Tự nhập tỉ lệ phần trăm.</td></tr></tbody></table></div><p>Hộp thoại In <strong>nhớ lựa chọn của lần in trước</strong> cho từng file đang mở (bấm Huỷ thì không lưu).</p><h3 id="s10-1">10.1. In 2 mặt trên máy in 1 mặt</h3><ol class="steps"><li>Trong ô <strong>In:</strong> chọn <strong>Chỉ trang lẻ (1, 3, 5...)</strong> rồi bấm In.</li><li>Lấy xấp giấy vừa in, lật úp lại và đặt vào khay giấy (hướng đặt tuỳ máy in, nên thử trước với 2 tờ).</li><li>Mở lại hộp thoại In, chọn <strong>Chỉ trang chẵn (2, 4, 6...)</strong> rồi bấm In.</li><li>Nếu thứ tự giấy ra bị ngược, tích thêm <strong>In ngược thứ tự</strong> ở lần in trang chẵn.</li></ol></div></section>
+<section id="s11" class="sec">
+  <header class="sec-h"><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 17c3 0 4-8 7-8s1 8 4 8 3-4 7-4"/><path d="M3 21h18"/></svg></span>
+  <div><span class="kicker">Mục 11</span><h2>Chữ ký số</h2></div></header>
+  <div class="sec-b"><h3 id="s11-1">11.1. Ký số tài liệu</h3><ol class="steps"><li>Chọn <strong>Ký số</strong> (HPC Tools → Chữ ký số), quét vùng trên trang để đặt khung chữ ký.</li><li>Chọn chứng thư: <strong>USB token</strong> (Viettel-CA, VNPT-CA, BKAV, FPT...) hoặc <strong>file chứng thư .pfx / .p12</strong>. Nếu không thấy token, bấm <strong>Đọc lại token</strong> hoặc <strong>Chọn driver...</strong>.</li><li>Nhập lý do, nơi ký, chọn nơi lưu file đã ký; có thể bật <strong>Hiện logo trong khung chữ ký</strong>.</li><li>Tự nhập <strong>mã PIN</strong> của token rồi xác nhận ký.</li></ol><div class="callout warn"><b>Lưu ý</b><span>Mã PIN chỉ người giữ chứng thư được nhập; không nhờ người khác nhập hay lưu PIN ở đâu. Sau khi ký, mọi chỉnh sửa trên file sẽ làm chữ ký mất hiệu lực: chương trình sẽ hỏi lại trước khi sửa file đã ký.</span></div><h3 id="s11-2">11.2. Kiểm tra chữ ký</h3><p>Bấm <strong>Kiểm tra chữ ký</strong> để xem các chữ ký số trong tài liệu: ai ký, ký lúc nào, tài liệu còn nguyên vẹn hay đã bị sửa sau khi ký.</p></div></section>
+<section id="s12" class="sec">
+  <header class="sec-h"><span class="ico"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg></span>
+  <div><span class="kicker">Mục 12</span><h2>Bảng phím tắt</h2></div></header>
+  <div class="sec-b"><div class="tbl"><table><thead><tr><th>Phím</th><th>Chức năng</th><th>Phím</th><th>Chức năng</th></tr></thead><tbody><tr><td data-h="Phím"><kbd>Ctrl</kbd><span class=plus>+</span><kbd>O</kbd></td><td data-h="Chức năng">Mở file</td><td data-h="Phím"><kbd>H</kbd></td><td data-h="Chức năng">Kéo (cuộn trang)</td></tr><tr><td data-h="Phím"><kbd>Ctrl</kbd><span class=plus>+</span><kbd>S</kbd></td><td data-h="Chức năng">Lưu</td><td data-h="Phím"><kbd>S</kbd></td><td data-h="Chức năng">Chọn chữ</td></tr><tr><td data-h="Phím"><kbd>Ctrl</kbd><span class=plus>+</span><kbd>Shift</kbd><span class=plus>+</span><kbd>S</kbd></td><td data-h="Chức năng">Lưu thành...</td><td data-h="Phím"><kbd>J</kbd></td><td data-h="Chức năng">Nối chữ</td></tr><tr><td data-h="Phím"><kbd>Ctrl</kbd><span class=plus>+</span><kbd>P</kbd></td><td data-h="Chức năng">In</td><td data-h="Phím"><kbd>E</kbd></td><td data-h="Chức năng">Sửa chữ</td></tr><tr><td data-h="Phím"><kbd>Ctrl</kbd><span class=plus>+</span><kbd>W</kbd></td><td data-h="Chức năng">Đóng tab</td><td data-h="Phím"><kbd>M</kbd></td><td data-h="Chức năng">Di chuyển</td></tr><tr><td data-h="Phím"><kbd>Ctrl</kbd><span class=plus>+</span><kbd>Z</kbd> / <kbd>Ctrl</kbd><span class=plus>+</span><kbd>Y</kbd></td><td data-h="Chức năng">Hoàn tác / Làm lại</td><td data-h="Phím"><kbd>T</kbd></td><td data-h="Chức năng">Thêm chữ</td></tr><tr><td data-h="Phím"><kbd>Ctrl</kbd><span class=plus>+</span><kbd>F</kbd></td><td data-h="Chức năng">Tìm</td><td data-h="Phím"><kbd>D</kbd></td><td data-h="Chức năng">Quét xoá vùng</td></tr><tr><td data-h="Phím"><kbd>Ctrl</kbd><span class=plus>+</span><kbd>B</kbd></td><td data-h="Chức năng">Thêm bookmark</td><td data-h="Phím"><kbd>Z</kbd></td><td data-h="Chức năng">Zoom vùng</td></tr><tr><td data-h="Phím"><kbd>Ctrl</kbd><span class=plus>+</span><kbd>0</kbd> / <kbd>Ctrl</kbd><span class=plus>+</span><kbd>2</kbd> / <kbd>Ctrl</kbd><span class=plus>+</span><kbd>1</kbd></td><td data-h="Chức năng">Vừa trang / vừa rộng / 100%</td><td data-h="Phím"><kbd>C</kbd> / <kbd>R</kbd> / <kbd>A</kbd></td><td data-h="Chức năng">Đám mây / Khung / Mũi tên</td></tr><tr><td data-h="Phím"><kbd>Ctrl</kbd> + lăn chuột</td><td data-h="Chức năng">Phóng to / thu nhỏ</td><td data-h="Phím"><kbd>P</kbd></td><td data-h="Chức năng">Pline</td></tr><tr><td data-h="Phím"><kbd>Home</kbd> / <kbd>End</kbd></td><td data-h="Chức năng">Trang đầu / cuối</td><td data-h="Phím"><kbd>G</kbd> / <kbd>N</kbd></td><td data-h="Chức năng">Tô sáng / Ghi chú</td></tr><tr><td data-h="Phím"><kbd>PgUp</kbd> / <kbd>PgDown</kbd></td><td data-h="Chức năng">Trang trước / sau</td><td data-h="Phím"><kbd>L</kbd> / <kbd>K</kbd></td><td data-h="Chức năng">Đo dài / Đo diện tích</td></tr><tr><td data-h="Phím"><kbd>Ctrl</kbd><span class=plus>+</span><kbd>Tab</kbd></td><td data-h="Chức năng">Tab file kế tiếp</td><td data-h="Phím"><kbd>Q</kbd></td><td data-h="Chức năng">Chọn dim</td></tr><tr><td data-h="Phím"><kbd>F5</kbd></td><td data-h="Chức năng">Lật nhanh bản vẽ</td><td data-h="Phím"><kbd>Ctrl</kbd><span class=plus>+</span><kbd>Shift</kbd><span class=plus>+</span><kbd>X</kbd></td><td data-h="Chức năng">Chụp màn hình</td></tr><tr><td data-h="Phím"><kbd>F3</kbd> / <kbd>F8</kbd></td><td data-h="Chức năng">Bắt điểm / Ortho</td><td data-h="Phím"><kbd>Ctrl</kbd><span class=plus>+</span><kbd>Shift</kbd><span class=plus>+</span><kbd>R</kbd></td><td data-h="Chức năng">Xoay nhiều trang</td></tr><tr><td data-h="Phím"><kbd>Del</kbd></td><td data-h="Chức năng">Xoá trang đang chọn</td><td data-h="Phím"><kbd>Ctrl</kbd><span class=plus>+</span><kbd>Shift</kbd><span class=plus>+</span><kbd>-</kbd> / <kbd>=</kbd></td><td data-h="Chức năng">Xoay trái / phải</td></tr><tr><td data-h="Phím"><kbd>Esc</kbd></td><td data-h="Chức năng">Huỷ, về công cụ Kéo</td><td data-h="Phím"><kbd>F1</kbd></td><td data-h="Chức năng">Hướng dẫn nhanh</td></tr></tbody></table></div></div></section>
+<section id="s13" class="sec">
+  <header class="sec-h"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .6-1.5 1.2-1.5 2.5M12 17h.01"/></svg></span>
+  <div><span class="kicker">Mục 13</span><h2>Câu hỏi thường gặp</h2></div></header>
+  <div class="sec-b"><ul><li><strong>Mở file thứ hai nhưng không thấy cửa sổ mới?</strong> Phần mềm chỉ chạy một cửa sổ; file mới được mở thành tab trong cửa sổ đang có.</li><li><strong>Không chọn / sửa được chữ?</strong> File có thể là ảnh scan hoặc chữ đã bị đổi thành nét vẽ. Chọn chữ và Sửa chữ không làm được với loại này; Nối chữ sẽ thử nhận dạng chữ (OCR).</li><li><strong>Kết quả đo sai?</strong> Kiểm tra lại Tỉ lệ đo (mục 4.1); bản vẽ có nhiều tỉ lệ thì đo gần chữ "TỶ LỆ 1:N" của hình đó hoặc dùng Hiệu chỉnh theo đoạn vừa đo.</li><li><strong>In ra không đúng tỉ lệ?</strong> Chọn cỡ in <strong>Theo khổ giấy (đúng tỉ lệ)</strong>.</li><li><strong>Cài bản mới có mất thiết lập không?</strong> Không, bộ cài cài đè và giữ nguyên thiết lập.</li></ul></div></section>
+    <div class="empty" id="empty">Không tìm thấy nội dung khớp. Thử từ khoá khác nhé.</div>
+    <footer class="foot">© HP CONS · Hướng dẫn sử dụng HPC PDF Reader <!--VER-->1.0.5<!--/VER--> · Trong phần mềm, nhấn <kbd>F1</kbd> để xem hướng dẫn nhanh.</footer>
+  </main>
+</div>
+<button class="totop" id="totop" aria-label="Lên đầu trang"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  // ---- sáng / tối (nhớ lựa chọn nếu trình duyệt cho phép) ----
+  try{var t=localStorage.getItem("hpc-guide-theme");if(t)root.setAttribute("data-theme",t);}catch(e){}
+  document.getElementById("themeBtn").onclick=function(){
+    var dark=root.getAttribute("data-theme")?root.getAttribute("data-theme")==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
+    var n=dark?"light":"dark";root.setAttribute("data-theme",n);
+    try{localStorage.setItem("hpc-guide-theme",n);}catch(e){}
+  };
+  // ---- mục lục trên điện thoại ----
+  var body=document.body;
+  document.getElementById("menuBtn").onclick=function(){body.classList.toggle("nav-open");};
+  document.getElementById("scrim").onclick=function(){body.classList.remove("nav-open");};
+  document.querySelectorAll("nav.toc a").forEach(function(a){a.addEventListener("click",function(){body.classList.remove("nav-open");});});
+  // ---- đánh dấu mục đang đọc ----
+  var links={};document.querySelectorAll("nav.toc a[data-sec]").forEach(function(a){links[a.dataset.sec]=a;});
+  var secs=[].slice.call(document.querySelectorAll("section.sec"));
+  function spy(){
+    var y=window.scrollY+120,cur=secs[0];
+    secs.forEach(function(s){if(!s.classList.contains("hidden")&&s.offsetTop<=y)cur=s;});
+    for(var k in links){var on=k===cur.id;links[k].classList.toggle("active",on);links[k].parentNode.classList.toggle("open",on);}
+    document.getElementById("totop").classList.toggle("show",window.scrollY>600);
+  }
+  window.addEventListener("scroll",spy,{passive:true});spy();
+  document.getElementById("totop").onclick=function(){window.scrollTo({top:0});};
+  // ---- tìm kiếm (không phân biệt dấu) ----
+  function fold(c){return c==="đ"||c==="Đ"?"d":c.normalize("NFD").charAt(0).toLowerCase();}
+  function foldStr(s){var o="";for(var i=0;i<s.length;i++)o+=fold(s[i]);return o;}
+  function unmark(){document.querySelectorAll("main mark").forEach(function(m){var p=m.parentNode;p.replaceChild(document.createTextNode(m.textContent),m);p.normalize();});}
+  function markIn(el,q){
+    var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT,null),nodes=[],n;
+    while((n=w.nextNode()))nodes.push(n);
+    nodes.forEach(function(node){
+      var f=foldStr(node.nodeValue),i=f.indexOf(q);if(i<0)return;
+      var frag=document.createDocumentFragment(),s=node.nodeValue,last=0;
+      while(i>=0){frag.appendChild(document.createTextNode(s.slice(last,i)));
+        var m=document.createElement("mark");m.textContent=s.slice(i,i+q.length);frag.appendChild(m);
+        last=i+q.length;i=f.indexOf(q,last);}
+      frag.appendChild(document.createTextNode(s.slice(last)));node.parentNode.replaceChild(frag,node);
+    });
+  }
+  var qi=document.getElementById("q"),clr=document.getElementById("clr"),timer;
+  function run(){
+    unmark();var q=foldStr(qi.value.trim());clr.style.display=q?"block":"none";var any=false;
+    // ưu tiên khớp nguyên cụm; không mục nào khớp cụm thì tìm mục chứa đủ mọi từ (không cần đúng thứ tự)
+    var words=!q?[]:secs.some(function(s){return foldStr(s.textContent).indexOf(q)>=0;})?[q]:q.split(/\s+/);
+    secs.forEach(function(s){
+      var f=foldStr(s.textContent),hit=words.every(function(w){return f.indexOf(w)>=0;});
+      s.classList.toggle("hidden",!hit);
+      links[s.id].parentNode.classList.toggle("hidden",!hit);
+      if(hit){any=true;words.forEach(function(w){markIn(s,w);});}
+    });
+    document.getElementById("empty").style.display=any?"none":"block";
+    spy();
+  }
+  qi.addEventListener("input",function(){clearTimeout(timer);timer=setTimeout(run,150);});
+  qi.addEventListener("keydown",function(e){
+    if(e.key==="Enter"){var m=document.querySelector("main mark");if(m)m.scrollIntoView({block:"center"});}
+    if(e.key==="Escape"){qi.value="";run();}
+  });
+  clr.onclick=function(){qi.value="";run();qi.focus();};
+  document.addEventListener("keydown",function(e){
+    if((e.ctrlKey&&e.key==="k")||(e.key==="/"&&document.activeElement!==qi)){e.preventDefault();qi.focus();qi.select();}
+  });
+})();
+</script>
+</body>
+</html>
