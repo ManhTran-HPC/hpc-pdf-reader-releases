@@ -1,0 +1,14 @@
+{
+  "version": "1.0.5",
+  "installer": "HPC_PDF_Reader_Setup_1.0.5.exe",
+  "date": "14/11/2026",
+  "notes": [
+    "Chọn chữ: có bảng danh sách và đếm số lượng từng loại, nút Sao chép nguyên mẫu giữ đúng định dạng",
+    "Nút Cài đặt dim gom Bắt điểm, Ortho, Tỉ lệ đo, Ghi kết quả",
+    "Ribbon tự vừa mọi màn hình; ô chuyển trang nằm giữa",
+    "Ghi diện tích 2 dòng, đặt trên hình, chu vi cùng đơn vị",
+    "Tách file có dòng xem trước, sửa lỗi tách sai cách",
+    "Hướng dẫn sử dụng trên web: Tệp → Hướng dẫn sử dụng (trang web)"
+  ],
+  "sha256": "fd3d35cfbe133d69461eb4d2459863dd07ea22e0b3635c804f59192239a3effe"
+}
